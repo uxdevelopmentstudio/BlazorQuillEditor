@@ -1,0 +1,90 @@
+﻿@using Microsoft.JSInterop
+@inject IJSRuntime JS
+
+<div id="@ToolbarId">
+    <span class="ql-formats">
+        <button class="ql-bold"></button>
+        <button class="ql-italic"></button>
+        <button class="ql-underline"></button>
+        <button class="ql-strike"></button>
+    </span>
+    <span class="ql-formats">
+        <button class="ql-blockquote"></button>
+        <button class="ql-code-block"></button>
+        <button class="ql-link"></button>
+        <button class="ql-image"></button>
+        <button class="ql-video"></button>
+        <button class="ql-formula"></button>
+    </span>
+    <span class="ql-formats">
+        <button class="ql-header" value="1"></button>
+        <button class="ql-header" value="2"></button>
+        <button class="ql-list" value="ordered"></button>
+        <button class="ql-list" value="bullet"></button>
+        <button class="ql-list" value="check"></button>
+        <button class="ql-script" value="sub"></button>
+        <button class="ql-script" value="super"></button>
+        <button class="ql-indent" value="-1"></button>
+        <button class="ql-indent" value="+1"></button>
+        <button class="ql-direction" value="rtl"></button>
+    </span>
+    <span class="ql-formats">
+        <select class="ql-color"></select>
+        <select class="ql-background"></select>
+        <select class="ql-font"></select>
+        <select class="ql-align"></select>
+    </span>
+</div>
+
+<div id="@EditorId" class="editor-box">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public int? MaxImageWidth { get; set; }
+    [Parameter]
+    public int? MaxImageHeight { get; set; }
+
+    private string EditorId { get; set; } = $"quill-editor-{Guid.NewGuid()}";
+    private string ToolbarId { get; set; } = $"quill-toolbar-{Guid.NewGuid()}";
+
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await using var _interopModule = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/QuillEditor/js/quill.initialize.js");
+
+            bool editorReady = await _interopModule.InvokeAsync<bool>("isEditorInitialized", $"#{EditorId}");
+
+            if (!editorReady)
+            {
+                bool quillLoaded = await _interopModule.InvokeAsync<bool>("isQuillLoaded");
+                if (!quillLoaded)
+                {
+                    await _interopModule.InvokeVoidAsync("loadScript", "./_content/QuillEditor/js/quill.js");
+                    await _interopModule.InvokeVoidAsync("loadScript", "./_content/QuillEditor/js/quill.resize.js");
+                    await _interopModule.InvokeVoidAsync("loadStyle", "./_content/QuillEditor/css/quill.snow.css");
+                    await _interopModule.InvokeVoidAsync("loadStyle", "./_content/QuillEditor/css/quill.resize.css");
+                }
+
+                await _interopModule.InvokeVoidAsync("initializeQuill", $"#{EditorId}", $"#{ToolbarId}", MaxImageWidth, MaxImageHeight);
+            }
+        }
+    }
+
+    public async Task SetHtmlAsync(string htmlContent)
+    {
+        await using var _interopModule = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/QuillEditor/js/quill.initialize.js");
+        await _interopModule.InvokeAsync<string>("setHtmlContent", $"#{EditorId}", htmlContent);
+    }
+    public async Task<string> GetHtmlAsync()
+    {
+        await using var _interopModule = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/QuillEditor/js/quill.initialize.js");
+        return await _interopModule.InvokeAsync<string>("getQuillHtml", $"#{EditorId}");
+    }
+}

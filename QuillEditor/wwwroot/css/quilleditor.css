@@ -1,0 +1,17 @@
+@import url('quill.resize.css');
+@import url('quill.snow.css');
+
+.ql-code-block-container
+{
+    counter-reset: line;
+    padding-left: 0;
+}
+
+.ql-code-block:before {
+    counter-increment: line;
+    content: counter(line);
+    display: inline-block;
+    border-right: 1px solid #ddd;
+    padding: 0 .5em;
+    margin-right: .5em;
+}

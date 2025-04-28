@@ -1,0 +1,85 @@
+﻿@page "/"
+@inject BlogService BlogService
+
+@if (newPost != null)
+{
+    <h1>Neuen Blogpost erstellen</h1>
+    <InputText @bind-Value="newPost.Title" placeholder="Titel" class="form-control" />
+    <br />
+    <InputText @bind-Value="newPost.Author" placeholder="Autor" class="form-control" />
+    <br />
+    <QuillEditorBox @ref="editor" MaxImageWidth="400" MaxImageHeight="400" />
+    <button class="btn btn-primary" @onclick="SavePost">Save</button>
+}
+<hr />
+
+<h2>Bestehende Beiträge</h2>
+<ul>
+    @foreach (var post in BlogService.GetPosts())
+    {
+        <li>@post.Title (@post.PublishDate.ToShortDateString()) <button class="btn btn-primary" @onclick="(() => LoadPost(post.Id))">Edit</button></li>
+    }
+</ul>
+<hr />
+
+<h1>Blogs</h1>
+@foreach (var post in BlogService.GetPosts())
+{
+    <article class="blog-post">
+        <h2>
+            @post.Title
+        </h2>
+        <p>
+            <em>
+                von @post.Author am @post.PublishDate.ToShortDateString()
+            </em>
+        </p>
+        <div class="ql-snow">
+            <!-- Um den Stylesheet von quill zu übernehmen!! -->
+            <div class="ql-editor">
+                <!-- Um den Stylesheet von quill zu übernehmen!! -->
+                
+                @((MarkupString)post.HtmlContent)
+            </div>
+        </div>
+    </article>
+}
+
+@code {
+    private BlogPost? newPost = new BlogPost();
+    private QuillEditorBox editor;
+
+    private async Task LoadPost(Guid? id)
+    {
+        if (id != null)
+        {
+            newPost = BlogService.GetPosts().Where(x => x.Id == id).FirstOrDefault();
+            if (newPost != null)
+            {
+                await editor.SetHtmlAsync(newPost.HtmlContent);
+            }
+        }
+    }
+
+    private async Task SavePost()
+    {
+        if (newPost != null)
+        {
+            newPost.HtmlContent = await editor.GetHtmlAsync(); ; // await JS.InvokeAsync<string>("getQuillHtml");
+
+            if (newPost.Id == null || newPost.Id == Guid.Empty)
+            {
+                newPost.PublishDate = DateTime.Now;
+                newPost.Id = Guid.NewGuid();
+            }
+
+            BlogService.SavePost(newPost);
+            newPost = new BlogPost();
+
+            // Den Quill Editor wieder resetten
+            await editor.SetHtmlAsync("");
+
+            StateHasChanged();
+        }
+    }
+}
