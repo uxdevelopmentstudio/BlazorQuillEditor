@@ -37,5 +37,7 @@ jobs:
       #  NUGET_VERSION: ${{ github.ref_name }}
 
     - name: Push to NuGet.org
-      run: dotnet nuget push nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
-      
+      run: dotnet nuget push nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      env:
+        # Wichtig für neue Packages
+        NUGET_SYMBOL_PUSH_ENABLED: false
