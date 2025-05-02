@@ -1,7 +1,11 @@
 ﻿@using Microsoft.JSInterop
 @inject IJSRuntime JS
 
-<div id="@ToolbarId">
+<div id="@ToolbarId" class="ql-toolbar ql-snow">
+    <span class="ql-formats">
+        <select class="ql-header"></select>
+        <select class="ql-font"></select>
+    </span>
     <span class="ql-formats">
         <button class="ql-bold"></button>
         <button class="ql-italic"></button>
@@ -12,6 +16,8 @@
         <button class="ql-blockquote"></button>
         <button class="ql-code-block"></button>
         <button class="ql-link"></button>
+    </span>
+    <span class="ql-formats">
         <button class="ql-image"></button>
         <button class="ql-video"></button>
         <button class="ql-formula"></button>
@@ -19,11 +25,17 @@
     <span class="ql-formats">
         <button class="ql-header" value="1"></button>
         <button class="ql-header" value="2"></button>
+    </span>
+    <span class="ql-formats">
         <button class="ql-list" value="ordered"></button>
         <button class="ql-list" value="bullet"></button>
         <button class="ql-list" value="check"></button>
+    </span>
+    <span class="ql-formats">
         <button class="ql-script" value="sub"></button>
         <button class="ql-script" value="super"></button>
+    </span>
+    <span class="ql-formats">
         <button class="ql-indent" value="-1"></button>
         <button class="ql-indent" value="+1"></button>
         <button class="ql-direction" value="rtl"></button>
@@ -31,7 +43,6 @@
     <span class="ql-formats">
         <select class="ql-color"></select>
         <select class="ql-background"></select>
-        <select class="ql-font"></select>
         <select class="ql-align"></select>
     </span>
 </div>
@@ -52,7 +63,7 @@
     private string EditorId { get; set; } = $"quill-editor-{Guid.NewGuid()}";
     private string ToolbarId { get; set; } = $"quill-toolbar-{Guid.NewGuid()}";
 
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -82,9 +93,16 @@
         await using var _interopModule = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/QuillEditor/js/quill.initialize.js");
         await _interopModule.InvokeAsync<string>("setHtmlContent", $"#{EditorId}", htmlContent);
     }
+
     public async Task<string> GetHtmlAsync()
     {
         await using var _interopModule = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/QuillEditor/js/quill.initialize.js");
         return await _interopModule.InvokeAsync<string>("getQuillHtml", $"#{EditorId}");
+    }
+
+    public async Task<string> GetTextAsync()
+    {
+        await using var _interopModule = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/QuillEditor/js/quill.initialize.js");
+        return await _interopModule.InvokeAsync<string>("getQuillText", $"#{EditorId}");
     }
 }

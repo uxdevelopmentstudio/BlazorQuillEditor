@@ -221,6 +221,15 @@ function insertToEditor(selector, url) {
     }
 }
 
+export function getQuillText(selector) {
+    const el = document.querySelector(selector);
+    if (el && el.__quill) {
+        var text = el.__quill.getText();
+        return text;
+    }
+    return "";
+}
+
 export function getQuillHtml(selector) {
     const el = document.querySelector(selector);
     if (el && el.__quill) {

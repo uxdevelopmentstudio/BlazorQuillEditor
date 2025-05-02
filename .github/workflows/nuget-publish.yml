@@ -1,0 +1,34 @@
+name: Publish NuGet Package
+
+on:
+  push:
+    tags:
+      - 'v*'  # Nur auslösen bei Tags wie v1.0.0
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Extract version from Git tag
+      run: echo "PACKAGE_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+
+    - name: Pack NuGet package (nur Bibliothek)
+      run: dotnet pack ./QuillEditor/QuillEditor.csproj --configuration Release --no-build --output ./nupkgs /p:PackageVersion=${{ env.PACKAGE_VERSION }}
+
+    - name: Push to NuGet.org
+      run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json

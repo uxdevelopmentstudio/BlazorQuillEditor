@@ -7,11 +7,11 @@
     padding-left: 0;
 }
 
-.ql-code-block:before {
-    counter-increment: line;
-    content: counter(line);
-    display: inline-block;
-    border-right: 1px solid #ddd;
-    padding: 0 .5em;
-    margin-right: .5em;
-}
+    .ql-code-block-container .ql-code-block:before {
+        counter-increment: line;
+        content: counter(line);
+        display: inline-block;
+        border-right: 1px solid #ddd;
+        padding: 0 .5em;
+        margin-right: .5em;
+    }

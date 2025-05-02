@@ -1,6 +1,20 @@
 ﻿@page "/"
 @inject BlogService BlogService
 
+<style>
+    #justText {
+        padding: 20px;
+        height: 80px;
+        background-color: #555;
+        color: lightgrey;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        border-radius: 5px;
+        overflow: auto;
+        border: 10px solid #555;
+    }
+</style>
+
 @if (newPost != null)
 {
     <h1>Neuen Blogpost erstellen</h1>
@@ -10,6 +24,9 @@
     <br />
     <QuillEditorBox @ref="editor" MaxImageWidth="400" MaxImageHeight="400" />
     <button class="btn btn-primary" @onclick="SavePost">Save</button>
+    <div id="justText">
+        PlainText: @PlainText
+    </div>
 }
 <hr />
 
@@ -38,7 +55,6 @@
             <!-- Um den Stylesheet von quill zu übernehmen!! -->
             <div class="ql-editor">
                 <!-- Um den Stylesheet von quill zu übernehmen!! -->
-                
                 @((MarkupString)post.HtmlContent)
             </div>
         </div>
@@ -48,7 +64,7 @@
 @code {
     private BlogPost? newPost = new BlogPost();
     private QuillEditorBox editor;
-
+    private string PlainText = string.Empty;
     private async Task LoadPost(Guid? id)
     {
         if (id != null)
@@ -65,7 +81,9 @@
     {
         if (newPost != null)
         {
-            newPost.HtmlContent = await editor.GetHtmlAsync(); ; // await JS.InvokeAsync<string>("getQuillHtml");
+            PlainText = await editor.GetTextAsync();
+
+            newPost.HtmlContent = await editor.GetHtmlAsync();
 
             if (newPost.Id == null || newPost.Id == Guid.Empty)
             {
