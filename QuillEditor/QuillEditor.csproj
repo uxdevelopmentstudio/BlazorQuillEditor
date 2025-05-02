@@ -1,21 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
+
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
 
-    <!-- NuGet-spezifische Angaben -->
+  <PropertyGroup>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageId>BlazorQuillEditor</PackageId>
-    <Version>1.0.0</Version> <!-- wird ggf. automatisch überschrieben -->
+    <Version>1.0.0</Version>
     <Authors>Ralf Niemann</Authors>
     <Company>uxDevelopmentStudio</Company>
     <Description>Eine wiederverwendbare Blazor-Klassenbibliothek für Quill.js</Description>
-    <PackageTags>blazor;components;nuget</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>blazor;components;nuget;quill;richtext;</PackageTags>
     <RepositoryUrl>https://github.com/uxdevelopmentstudio/BlazorQuillEditor</RepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-   </PropertyGroup>
+  </PropertyGroup>
+
 
   <ItemGroup>
     <SupportedPlatform Include="browser" />
