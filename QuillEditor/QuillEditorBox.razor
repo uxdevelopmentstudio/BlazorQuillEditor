@@ -68,7 +68,7 @@
     {
         if (firstRender)
         {
-            await using var _interopModule = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/QuillEditor/js/quill.initialize.js");
+            await using var _interopModule = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/uxBlazorQuillEditor/js/quill.initialize.js");
 
             bool editorReady = await _interopModule.InvokeAsync<bool>("isEditorInitialized", $"#{EditorId}");
 
@@ -77,10 +77,10 @@
                 bool quillLoaded = await _interopModule.InvokeAsync<bool>("isQuillLoaded");
                 if (!quillLoaded)
                 {
-                    await _interopModule.InvokeVoidAsync("loadScript", "./_content/QuillEditor/js/quill.js");
-                    await _interopModule.InvokeVoidAsync("loadScript", "./_content/QuillEditor/js/quill.resize.js");
-                    await _interopModule.InvokeVoidAsync("loadStyle", "./_content/QuillEditor/css/quill.snow.css");
-                    await _interopModule.InvokeVoidAsync("loadStyle", "./_content/QuillEditor/css/quill.resize.css");
+                    await _interopModule.InvokeVoidAsync("loadScript", "./_content/uxBlazorQuillEditor/js/quill.js");
+                    await _interopModule.InvokeVoidAsync("loadScript", "./_content/uxBlazorQuillEditor/js/quill.resize.js");
+                    await _interopModule.InvokeVoidAsync("loadStyle", "./_content/uxBlazorQuillEditor/css/quill.snow.css");
+                    await _interopModule.InvokeVoidAsync("loadStyle", "./_content/uxBlazorQuillEditor/css/quill.resize.css");
                 }
 
                 await _interopModule.InvokeVoidAsync("initializeQuill", $"#{EditorId}", $"#{ToolbarId}", MaxImageWidth, MaxImageHeight);
@@ -90,19 +90,19 @@
 
     public async Task SetHtmlAsync(string htmlContent)
     {
-        await using var _interopModule = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/QuillEditor/js/quill.initialize.js");
+        await using var _interopModule = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/uxBlazorQuillEditor/js/quill.initialize.js");
         await _interopModule.InvokeAsync<string>("setHtmlContent", $"#{EditorId}", htmlContent);
     }
 
     public async Task<string> GetHtmlAsync()
     {
-        await using var _interopModule = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/QuillEditor/js/quill.initialize.js");
+        await using var _interopModule = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/uxBlazorQuillEditor/js/quill.initialize.js");
         return await _interopModule.InvokeAsync<string>("getQuillHtml", $"#{EditorId}");
     }
 
     public async Task<string> GetTextAsync()
     {
-        await using var _interopModule = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/QuillEditor/js/quill.initialize.js");
+        await using var _interopModule = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/uxBlazorQuillEditor/js/quill.initialize.js");
         return await _interopModule.InvokeAsync<string>("getQuillText", $"#{EditorId}");
     }
 }

@@ -59,7 +59,7 @@ muss sich der HTML Content in folgender Struktur befinden:
 
 _Host.cshtml
 ```
-<link href="./_content/QuillEditor/css/quilleditor.css" rel="stylesheet" />
+<link href="./_content/uxBlazorQuillEditor/css/quilleditor.css" rel="stylesheet" />
 ```
 
 YourBlogPage.razor
