@@ -59,15 +59,23 @@
     public int? MaxImageWidth { get; set; }
     [Parameter]
     public int? MaxImageHeight { get; set; }
+    [Parameter]
+    public EventCallback Initialized { get; set; }
+    [Parameter]
+    public EventCallback ContentChanged { get; set; }
 
-    private string EditorId { get; set; } = $"quill-editor-{Guid.NewGuid()}";
-    private string ToolbarId { get; set; } = $"quill-toolbar-{Guid.NewGuid()}";
+    private DotNetObjectReference<QuillEditorBox> _dotNetObjRef;
 
+    public string EditorId { get; set; } = $"quill-editor-{Guid.NewGuid()}";
+    public string ToolbarId { get; set; } = $"quill-toolbar-{Guid.NewGuid()}";
+    public bool IsInitialized = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
+            _dotNetObjRef = DotNetObjectReference.Create(this);
+
             await using var _interopModule = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/uxBlazorQuillEditor/js/quill.initialize.js");
 
             bool editorReady = await _interopModule.InvokeAsync<bool>("isEditorInitialized", $"#{EditorId}");
@@ -83,9 +91,18 @@
                     await _interopModule.InvokeVoidAsync("loadStyle", "./_content/uxBlazorQuillEditor/css/quill.resize.css");
                 }
 
-                await _interopModule.InvokeVoidAsync("initializeQuill", $"#{EditorId}", $"#{ToolbarId}", MaxImageWidth, MaxImageHeight);
+                await _interopModule.InvokeVoidAsync("initializeQuill", $"#{EditorId}", $"#{ToolbarId}", MaxImageWidth, MaxImageHeight, _dotNetObjRef);
             }
+            IsInitialized = true;
+            await Initialized.InvokeAsync(this);
         }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    [JSInvokable]
+    public async Task HandleContentChanged()
+    {
+        await ContentChanged.InvokeAsync();
     }
 
     public async Task SetHtmlAsync(string htmlContent)

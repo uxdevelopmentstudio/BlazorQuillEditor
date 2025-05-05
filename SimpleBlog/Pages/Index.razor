@@ -22,7 +22,7 @@
     <br />
     <InputText @bind-Value="newPost.Author" placeholder="Autor" class="form-control" />
     <br />
-    <QuillEditorBox @ref="editor" MaxImageWidth="400" MaxImageHeight="400" />
+    <QuillEditorBox @ref="editor" MaxImageWidth="400" MaxImageHeight="400" Initialized="OnChildInitialized" ContentChanged="Preview" />
     <button class="btn btn-primary" @onclick="SavePost">Save</button>
     <div id="justText">
         PlainText: @PlainText
@@ -65,6 +65,7 @@
     private BlogPost? newPost = new BlogPost();
     private QuillEditorBox editor;
     private string PlainText = string.Empty;
+    private string HTMLContent = string.Empty;
     private async Task LoadPost(Guid? id)
     {
         if (id != null)
@@ -76,7 +77,20 @@
             }
         }
     }
-
+    private async Task Preview()
+    {
+        // Wird bei TextChanged aufgerufen.
+        PlainText = await editor.GetTextAsync();
+        StateHasChanged();
+    }
+    private async Task OnChildInitialized()
+    {
+        // Wenn die Componente selber innerhalb einer Komponente erzeugt wird,
+        // ist die Komponente selber erst im AfterRender initialisiert.
+        // Daher hier die möglichkeit den Editor nach der Initialisierung nochmals direkt per 
+        // EventCallback anzusprechen.
+        await editor.SetHtmlAsync(HTMLContent);
+    }
     private async Task SavePost()
     {
         if (newPost != null)

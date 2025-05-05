@@ -47,11 +47,15 @@ Imports
 
 YourAdminPage.razor
 ```
-<QuillEditorBox @ref="editor" MaxImageWidth="400" MaxImageHeight="400" />
+<QuillEditorBox @ref="editor" MaxImageWidth="400" MaxImageHeight="400" Initialized="OnChildInitialized" ContentChanged="Preview"/>
 ```
 MaxImageWidth und MaxImageHeight sind Optional. 
 Hiermit wird direkt beim Einfügen die Bildgröße auf die jeweilige Maximalangabe skaliert, 
 so dass die Images tatsächlich auch in der Dateigröße sich verkleinern. 
+
+Initialized wird aufgerufen nachdem die Komponente in AfterRender/FirstRender per Javascript erzeugt wurde.
+
+ContextChanged wird bei Text-Changed aufgerufen.
 
 ## Hinweis
 Damit die Classes die Quill im HTML zurückgibt auch auf eurer Ausgabeseite übernommen werden, 

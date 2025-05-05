@@ -28,7 +28,7 @@ export function isEditorInitialized(selector) {
     return !!(el && el.__quill);
 }
 
-export function initializeQuill(selector, toolbarselector, maximagewidth, maximageheight) {
+export function initializeQuill(selector, toolbarselector, maximagewidth, maximageheight, dotNetHelper) {
     const el = document.querySelector(selector);
     if (!el) {
         console.error(`Element ${selector} not found`);
@@ -77,6 +77,9 @@ export function initializeQuill(selector, toolbarselector, maximagewidth, maxima
         selectLocalImage(selector, true, maximagewidth, maximageheight);
     });
 
+    quill.on('text-change', function () {
+        dotNetHelper.invokeMethodAsync('HandleContentChanged');
+    });
 
     el.__quill = quill;
 
