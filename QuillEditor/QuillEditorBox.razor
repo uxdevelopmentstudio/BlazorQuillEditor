@@ -45,9 +45,18 @@
         <select class="ql-background"></select>
         <select class="ql-align"></select>
     </span>
+    <span class="ql-formats">
+        <button class="ql-table"></button>
+        <button class="ql-column-left"></button>
+        <button class="ql-column-right"></button>
+        <button class="ql-row-above"></button>
+        <button class="ql-row-below"></button>
+        <button class="ql-row-remove"></button>
+        <button class="ql-column-remove"></button>
+    </span>
 </div>
 
-<div id="@EditorId" class="editor-box">
+<div id="@EditorId" class="editor-box ql-container">
     @ChildContent
 </div>
 
@@ -87,8 +96,7 @@
                 {
                     await _interopModule.InvokeVoidAsync("loadScript", "./_content/uxBlazorQuillEditor/js/quill.js");
                     await _interopModule.InvokeVoidAsync("loadScript", "./_content/uxBlazorQuillEditor/js/quill.resize.js");
-                    await _interopModule.InvokeVoidAsync("loadStyle", "./_content/uxBlazorQuillEditor/css/quill.snow.css");
-                    await _interopModule.InvokeVoidAsync("loadStyle", "./_content/uxBlazorQuillEditor/css/quill.resize.css");
+                    await _interopModule.InvokeVoidAsync("loadStyle", "./_content/uxBlazorQuillEditor/css/quilleditor.css");
                 }
 
                 await _interopModule.InvokeVoidAsync("initializeQuill", $"#{EditorId}", $"#{ToolbarId}", MaxImageWidth, MaxImageHeight, _dotNetObjRef);
